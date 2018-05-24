@@ -3,167 +3,38 @@
   <head>
     <title>Testing Moment.js</title>
 
-    <style >
+    <!--<style >
       #warning {
         background-color: lightgoldenrodyellow;
         border: 1px solid lightgray;
         border-radius: 5px;
         padding: 5px 10px;
       }
-    </style>
+    </style>-->
+
+    <link rel="stylesheet" type="text/css" href="css/index.css">
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment-with-locales.min.js"></script>
-    <script>
-      moment().format();
+    <script src="js/deliveryTimeCalculations.js"></script>
+    <script src="js/openinghours.js"></script>
 
-      //defines the opening hours of a restaurant
-      //from monday to sunday -> from 1 to 7
-      var openinghours = {
-        "1": [
-          {
-            "from": "10:30",
-            "to": "14:00"
-          },
-          {
-            "from": "17:00",
-            "to": "22:00"
-          }
-        ],
-        "2": [
-          {
-            "from": "10:30",
-            "to": "14:00"
-          },
-          {
-            "from": "17:00",
-            "to": "22:00"
-          }
-        ],
-        "4": [
-          {
-            "from": "12:00",
-            "to": "23:30"
-          }
-        ],
-        "5": [
-          {
-            "from": "12:00",
-            "to": "23:30"
-          }
-        ],
-        "6": [
-          {
-            "from": "12:00",
-            "to": "23:30"
-          }
-        ],
-        "7": [
-          {
-            "from": "10:00",
-            "to": "15:00"
-          }
-        ]
-      }
-
-      //defines the deliverytime
-      var deliverytime = "50";
-
-      
-
-      $(function() {
-        var date = moment();
-        $("#today").text(date._d);
-
-        //set custom time for debugging;
-        date.day(5);
-        console.warn(date._d);
-        //date.hours(11);
-        //date.minutes(25);
-
-        //start calculations
-        doDateTimeCalc(date);
-      });
-
-
-      function doDateTimeCalc(date) {
-        var day = date.day(); //get day
-        
-        if(day === 0) { //in JS, sunday = 0, but we recieve sunday as 7
-          day = 7;
-        }
-
-
-        //check if entry exists, if not -> the restaurante is closed on this day
-        if (openinghours[day] == undefined || openinghours[day] == null) {
-          $("#warning").prop("hidden", false).text("Day is not defined in object, meaning that the restauraunt is closed on this day");
-          return 0;
-        }
-
-        //add delivery time of 50 minutes
-        date.add(parseInt(deliverytime), "m");
-
-        //loop through every entry on this day
-        openinghours[day].forEach(function (element) {
-          //print openinghours of this day
-          $("#openinghours").append("<li>"+element.from+" - "+element.to+"</li>");
-
-          //define new DateTime variables with the opening time and closing time
-          var open = moment(element.from, "HH-mm"); //e.g. moment("11:00", "HH-mm");
-          var closed = moment(element.to, "HH-mm");
-
-          //mainly for debugging, if you set the day manually for the date variable, the day difference leads to errors
-          open.day(date.day());
-          closed.day(date.day());
-
-          //check if closing time is on the next day --> if so, add 1 day to the closing time
-          if(closed.isBefore(open)) {
-            closed.add(1, "d");
-          }
-          
-          var i;
-          //e.g. date.hours() = 18, (element.to.split(":"))[0] = 23 --> 6 loops
-          //for every loop, hours gets increased by 1 until it reaches the closing time
-          for (let i = date.hours(); i <= closed.hours(); i++) {
-            date.hours(i); //increase hours
-
-            
-            //4th parameter --> [] means inclusion, () means exclusion
-            //--> include "open", exclude "closed"
-            if(date.isBetween(open, closed, 'minute', '[)')) {
-
-              appendOption(date.hours(), "00", 1);
-              appendOption(date.hours(), "30", 2);
-            } else if(i == (element.to.split(":"))[0]) {
-              appendOption(date.hours(), "00", 3);
-            }
-          }
-
-          
-        });
-
-        //on change event
-        $("#time-selected").change(onOptionChange);
-      }
-
-      //appends options to a select field
-      //codenumber is used for debugging, so you can exactly say, which option was produced, by which function call
-      function appendOption(h, m, codenumber) {
-        console.log(h,m, codenumber);
-        $("#time-select").append("<option value='"+h+m+"'>"+h+":"+m+"</option>");
-      }
-
-      //logs selected option
-      function onOptionChange(event) {
-        console.log($(this).val());
-      }
-      
-
-    </script>
   </head>
-    <h1>Calculating delivery times from given opening hours, with Moment.js</h1>
+    <h1>Calculating delivery times from given opening hours and a delivery time, with Moment.js</h1>
 
-    <h3 id="today"></h3>
+    <h3>Selectable times the user can pick should be on full and half hours, as long as they meet the requirements</h3>
+
+    <br>
+
+    <span>Change the current time here:</span>
+    <input type='number' id='weekday' name='weekday' placeholder="Weekday from 1 to 7" max="7" min="1">
+    <input type='number' id='time' name='time' placeholder="Time e.g. 1605" maxlength="4" minlength="4" >
+    <input type='submit' id='submit-weekday-time' value='Set New Time'><br>
+    
+    <span class='note'>If you leave 1 input empty, it will only change the one which is not empty</span><br><br><br>
+
+    <strong>Current Time:</strong><br>
+    <span id="today"></span><br><br>
 
     <strong>Opening Hours:</strong>
     <ul id="openinghours"></ul>

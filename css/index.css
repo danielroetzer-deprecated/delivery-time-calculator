@@ -1,0 +1,24 @@
+#warning {
+  background-color: lightgoldenrodyellow;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+#time-select {
+  margin: 5px 10px;
+}
+
+#today {
+  background-color: lightgoldenrodyellow;
+}
+
+input[type="number"] {
+  width: 150px;
+}
+
+.note {
+  font-style: italic;
+  font-size: 0.9em;
+  color: gray;
+}

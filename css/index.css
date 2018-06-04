@@ -1,24 +1,24 @@
 #warning {
-  background-color: lightgoldenrodyellow;
   border: 1px solid lightgray;
   border-radius: 5px;
   padding: 5px 10px;
 }
 
-#time-select {
-  margin: 5px 10px;
+#info {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 0;
 }
 
-#today {
-  background-color: lightgoldenrodyellow;
+#success {
+  background-color: green;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 0;
 }
 
-input[type="number"] {
-  width: 150px;
-}
-
-.note {
-  font-style: italic;
-  font-size: 0.9em;
-  color: gray;
+.breaks {
+  padding-bottom: 400px;
 }
